@@ -5,11 +5,12 @@
 
 int main()
 {
-
     fileToTempon();
+    //printLexTab();
 
-    //char *str = "while id1<=20 then id1/12";
-    //decoupage(str, 0);
+
+
+
 
     printf("\n");
     system("PAUSE>null");

@@ -56,7 +56,6 @@ char* IsKeyWord(char* word, int ptrs, int ptrf)
     for(i = 0; i<MAX_KEY_WORD; i++)
         if(strcmp(kword, KeyWords[i][0]) == 0) return KeyWords[i][1];
     return NULL;
-
 }
 
 int isSpeacialSymbol(char* symbol, int ptrs, int ptrf)
