@@ -1,3 +1,4 @@
+
 #include "cutting.h"
 
 void print_token(char *token, int ptr_debut, int ptr_fin)
