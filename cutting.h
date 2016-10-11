@@ -20,7 +20,7 @@ typedef struct _symbolTable {
 
 symbolTable_t *pascalTabS;
 
-void decoupage(char* , int );
+void decoupage(char* , int);
 void fileToTempon();
 void print_token(char*, int, int);
 void Filter_identifer_number(char*, int, int);
