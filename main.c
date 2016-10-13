@@ -6,7 +6,7 @@
 int main()
 {
     fileToTempon();
-    //printLexTab();
+    printLexTab();
 
 
 

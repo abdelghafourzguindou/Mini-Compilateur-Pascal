@@ -8,11 +8,11 @@ void filling_Identifier_Automata()
 
     int i,j;
 
-    for(i=0; i<2; i++) for(j=0; j<255; j++) Trans_Tab[i][j] = -1;
+    for(i=0; i<2; i++) for(j=0; j<255; j++)     Trans_Tab[i][j] = -1;
     ///pour a ....z
-    for(j=0; j<2; j++) for(i=97; i<=122; i++) Trans_Tab[j][i] = 1;
+    for(j=0; j<2; j++) for(i=97; i<=122; i++)   Trans_Tab[j][i] = 1;
     ///pour A .......Z
-    for(j=0; j<2; j++) for(i=65; i<=90; i++) Trans_Tab[j][i] = 1;
+    for(j=0; j<2; j++) for(i=65; i<=90; i++)    Trans_Tab[j][i] = 1;
     ///pour 0 ...........9
     for(i=48; i<=57; i++) Trans_Tab[1][i] = 1;
 }
@@ -75,7 +75,9 @@ int IsNumber(char* Number, int startptr, int finalptr)
         state  = Trans_Tab[state][symbol];
         symbol = (int)(Number[i]);
         i++;
-    }    
+    }
+    state  = Trans_Tab[state][symbol];
+    symbol = (int)(Number[i]);
     if((state == 3 || state == 1) && Trans_Tab[state][(int)(Number[i])] != -1) return 1;
     return 0;
 }

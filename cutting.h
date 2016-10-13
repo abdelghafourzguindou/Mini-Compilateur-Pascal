@@ -25,8 +25,9 @@ void fileToTempon();
 void print_token(char*, int, int);
 void Filter_identifer_number(char*, int, int);
 void getSpecialSymbol(char*, int, int);
-symbolTable_t * addLexem(symbolTable_t *, char*, int, int, char*);
+void addLexem(char*, int, int, char*);
 void printLexTab();
 
+bool isComment;
 
 #endif // CUTTING_H
