@@ -148,7 +148,7 @@ void scaning()
     else if (isalpha  (current_char))    { setCurrent_token_NULL(); read_word();          }
     else if (isdigit  (current_char))    { setCurrent_token_NULL(); read_number();        }
     else if (isSpecial(current_char))    { setCurrent_token_NULL(); read_special_symbol();}
-    else if (isComment(current_char))    { read_comment();}
+    else if (isComment(current_char))    { setCurrent_token_NULL(); read_comment();       }
 
     /*if(current_char == EOF)
     {
