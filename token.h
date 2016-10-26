@@ -70,7 +70,6 @@ typedef enum {
      ERROR_PF_TOKEN,
      ERROR_FIN_TOKEN,
      ERROR_NUMBER_TOKEN,
-
      ERROR_ID_TOKEN,
 } error_code_t;
 

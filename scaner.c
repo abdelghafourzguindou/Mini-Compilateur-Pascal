@@ -138,7 +138,6 @@ void setCurrent_token_NULL()
 void scaning()
 {
 
-
     read_char(file);
 
     if      (isEmpty  (current_char))    { setCurrent_token_NULL(); return;               }
@@ -151,10 +150,6 @@ void scaning()
         current_token.name[0] = current_char ;
         current_token.code = ERROR_INDEFINED_TOKEN ;
     }
-    /*if(current_char == EOF)
-    {
-        setCurrent_token_NULL();
-        current_token.name[0] = EOF;
-        current_token.code    = FIN_TOKEN;
-    }*/
+
+
 }
