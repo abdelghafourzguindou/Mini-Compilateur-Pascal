@@ -14,7 +14,7 @@ void read_char(FILE* file)
 
 void read_word()
 {
-    while(isalpha(current_char))
+    while(isalnum(current_char))
     {
         append(current_token.name, current_char);
         read_char(file);
@@ -29,7 +29,7 @@ void read_word()
 
 void read_number()
 {
-    while(isdigit(current_char) || isalpha(current_char))
+    while(isalnum(current_char))
     {
         append(current_token.name, current_char);
         read_char(file);
@@ -51,7 +51,7 @@ void read_special_symbol()
        ((c1 == '<' || c1 == '>') && c2 == '='))
     {
         append(current_token.name, c2);
-        getSpecialSymbol(current_token.name);
+        current_token.code = isSpeacialSymbol(current_token.name);
     }
     else
     {
@@ -148,7 +148,7 @@ void scaning()
     else if (isalpha  (current_char))    { setCurrent_token_NULL(); read_word();          }
     else if (isdigit  (current_char))    { setCurrent_token_NULL(); read_number();        }
     else if (isSpecial(current_char))    { setCurrent_token_NULL(); read_special_symbol();}
-    else if (isComment(current_char))    { read_comment();};
+    else if (isComment(current_char))    { read_comment();}
 
     /*if(current_char == EOF)
     {

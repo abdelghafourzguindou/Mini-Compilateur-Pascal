@@ -3,9 +3,6 @@
 
 #include <string.h>
 
-#define MAX_KEY_WORD 11
-#define MAX_SPECIAL_CARACTER 16
-
 typedef enum {
     PROGRAM_TOKEN,
     CONST_TOKEN,
