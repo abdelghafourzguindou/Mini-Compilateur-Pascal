@@ -2,7 +2,6 @@
 
 token_code_t IsKeyWord(char* kword)
 {
-    //char *kword = cutToken(word, ptrs, ptrf);
     token_code_t token;
 
     if     (!strcmp(kword, "program"))  token = PROGRAM_TOKEN;
@@ -23,7 +22,6 @@ token_code_t IsKeyWord(char* kword)
 
 token_code_t isSpeacialSymbol(char* kword)
 {
-    //char *kword = cutToken(symbol, ptrs, ptrf);
     token_code_t token;
 
     if     (!strcmp(kword, ";"))        token = PV_TOKEN;

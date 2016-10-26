@@ -23,7 +23,7 @@ void read_word()
     token_code_t unlex = IsKeyWord(current_token.name);
 
     if(unlex != ERROR_TOKEN)                  current_token.code = unlex;
-    else if(IsIdentifier(current_token.name)) current_token.code = IDENTIFIER;
+    else if(IsIdentifier(current_token.name)) current_token.code = ID_TOKEN;
     else                                      current_token.code = ERROR_TOKEN;
 }
 
@@ -35,7 +35,7 @@ void read_number()
         read_char(file);
     }
 
-    if(IsNumber(current_token.name)) current_token.code = NUMBER;
+    if(IsNumber(current_token.name)) current_token.code = NUMBER_TOKEN;
     else                             current_token.code = ERROR_TOKEN;
 }
 
