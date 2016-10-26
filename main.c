@@ -1,13 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "cutting.h"
+#include "scaner.h"
+#include "parser.h"
+
 
 int main()
 {
-    fileToTempon();
-    printLexTab();
 
+    /*scaning();
+    print_lex();*/
+
+    file = fopen(nameFile, "r");
+
+    if(file == NULL)
+    {
+        printf("ERROR FILE");
+        exit(0);
+    }
+
+    parsering();
 
 
 

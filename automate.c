@@ -17,22 +17,20 @@ void filling_Identifier_Automata()
     for(i=48; i<=57; i++) Trans_Tab[1][i] = 1;
 }
 
-int IsIdentifier(char *word, int startptr, int finalptr)
+int IsIdentifier(char *word)
 {
     filling_Identifier_Automata();
 
-    int e = 0, r, i = startptr;
+    int e = 0, r, i = 0, lgnt = strlen(word);
     char s = word[i];
-    while((Trans_Tab[e][(int)(s)]!=-1) && (i<finalptr))
+    while((Trans_Tab[e][(int)(s)]!=-1))
     {
         r = (int)(s);
         e = Trans_Tab[e][r];
         i++;
         s = word[i];
     }
-    r = (int)(s);
-    e = Trans_Tab[e][r];
-    if((e==1)) return 1;
+    if((e == 1)) return 1;
     return 0;
 }
 
@@ -62,23 +60,22 @@ void filling_Number_Automata()
     Trans_Tab[1][(int)'.'] = 2;
 }
 
-int IsNumber(char* Number, int startptr, int finalptr)
+int IsNumber(char* Number)
 {
     filling_Number_Automata();
 
-    int i      = startptr;
+    int i      = 0;
+    int lgnt   = strlen(Number);
     int state  = 0;
     int symbol = (int)(Number[i]);
 
-    while(i < finalptr && Trans_Tab[state][symbol] != -1)
+    while(Trans_Tab[state][symbol] != -1 && i <= lgnt)
     {
         state  = Trans_Tab[state][symbol];
         symbol = (int)(Number[i]);
         i++;
     }
-    state  = Trans_Tab[state][symbol];
-    symbol = (int)(Number[i]);
-    if((state == 3 || state == 1) && Trans_Tab[state][(int)(Number[i])] != -1) return 1;
+    if((state == 3 || state == 1) && i == lgnt+1) return 1;
     return 0;
 }
 

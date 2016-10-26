@@ -4,11 +4,13 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.c \
-    cutting.c \
     automate.c \
-    keyword.c
+    scaner.c \
+    token.c \
+    parser.c
 
 HEADERS += \
-    cutting.h \
     automate.h \
-    keyword.h
+    scaner.h \
+    token.h \
+    parser.h

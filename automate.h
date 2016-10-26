@@ -9,8 +9,8 @@ void filling_Number_Automata();
 void filling_Identifier_Automata();
 void filling_Operator_Automata();
 
-int IsNumber(char*, int, int);
-int IsIdentifier(char*, int, int);
-int IsOperator(char*, int, int);
+int IsNumber(char*);
+int IsIdentifier(char*);
+int IsOperator(char*);
 
 #endif // AUTOMATE_H
