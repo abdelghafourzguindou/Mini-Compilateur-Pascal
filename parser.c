@@ -2,23 +2,32 @@
 
 void print_token()
 {
-    if(current_token.code != EMPTY_TOKEN) printf("\n%s\t\t\t%d", current_token.name, current_token.code);
+    if(current_token.code != EMPTY_TOKEN) printf("--> %s\t\t\t%s\n", current_token.name,  Token_code[current_token.code]);
 }
 
 void get_next_token()
 {
-    scaning();
+    do{
+        scaning();
+    } while(current_token.code == EMPTY_TOKEN);
+    //print_token();
 }
 
 void test_symbol(token_code_t code_token, error_code_t error_code)
 {
     if(current_token.code == code_token) get_next_token();
-    //else ERROR(error_code);
+    else print_error(error_code);
 }
 
 void _program()
 {
     //PROGRAM ::= program ID ; BLOCK.
+
+    //Demarage
+    setCurrent_token_NULL(); //Initialisation de token
+    read_char(file);         //Lire le premier caractere
+    get_next_token();        //Lire le premier token
+
     test_symbol(PROGRAM_TOKEN, ERROR_PROGRAM_TOKEN);
     test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
     test_symbol(PV_TOKEN, ERROR_PV_TOKEN);
@@ -55,7 +64,7 @@ void _consts()
 
         case VAR_TOKEN      : break;
         case BEGIN_TOKEN    : break;
-        default             : /*error(CONST_VAR_BEGIN_ERR);*/ break;
+        default             : printf("\nCONSTS_ERROR\n"); break;
     }
 }
 
@@ -66,18 +75,16 @@ void _vars()
         case VAR_TOKEN :
             get_next_token();
             test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
-            test_symbol(VIR_TOKEN, ERROR_VIR_TOKEN);
-            while(current_token.code == ID_TOKEN)
+            while(current_token.code == VIR_TOKEN)
             {
                 get_next_token();
                 test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
-                test_symbol(VIR_TOKEN, ERROR_VIR_TOKEN);
             }
             test_symbol(PV_TOKEN, ERROR_PV_TOKEN);
         break;
 
         case BEGIN_TOKEN : break;
-        default : /*error();*/ break;
+        default : printf("\nVARS_ERROR\n"); break;
     }
 }
 
@@ -85,10 +92,10 @@ void _insts()
 {
     test_symbol(BEGIN_TOKEN, ERROR_BEGIN_TOKEN);
     _inst();
-    test_symbol(PV_TOKEN, ERROR_PV_TOKEN);
     while(current_token.code == PV_TOKEN)
     {
-        test_symbol(PV_TOKEN, ERROR_PV_TOKEN);
+        get_next_token();
+        _inst();
     }
     test_symbol(END_TOKEN, ERROR_END_TOKEN);
 }
@@ -104,7 +111,8 @@ void _inst()
         case WRITE_TOKEN : _write();    break;
         case READ_TOKEN  : _read();     break;
         case PV_TOKEN    : /*epsiland*/ break;
-        default          : /*error*/    break;
+        case END_TOKEN   : /*epsilon*/ break;
+        default          : printf("\nINST_ERROR\n");    break;
     }
 }
 
@@ -136,7 +144,7 @@ void _write()
     test_symbol(WRITE_TOKEN, ERROR_WRITE_TOKEN);
     test_symbol(PO_TOKEN, ERROR_PO_TOKEN);
     _expr();
-    while(current_token.code == PV_TOKEN)
+    while(current_token.code == VIR_TOKEN)
     {
         _expr();
     }
@@ -148,7 +156,7 @@ void _read()
     test_symbol(READ_TOKEN, ERROR_READ_TOKEN);
     test_symbol(PO_TOKEN, ERROR_PO_TOKEN);
     test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
-    while(current_token.code == PV_TOKEN)
+    while(current_token.code == VIR_TOKEN)
     {
         test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
     }
@@ -163,51 +171,65 @@ void _cond()
        current_token.code == INF_TOKEN   ||
        current_token.code == SUP_TOKEN   ||
        current_token.code == INFEG_TOKEN ||
-       current_token.code == SUPEG_TOKEN) _expr();
-    else{/*error*/}
+       current_token.code == SUPEG_TOKEN)
+    {
+        get_next_token();
+        _expr();
+    }
+    //else printf("\nCOND_ERROR\n");
 }
 
 void _expr()
 {
     _term();
-    if(current_token.code == PLUS_TOKEN  ||
-       current_token.code == MOINS_TOKEN) _term();
-    else{/*error*/}
+    while(current_token.code == PLUS_TOKEN  ||
+          current_token.code == MOINS_TOKEN)
+    {
+        get_next_token();
+        _term();
+    }
 }
 
 void _term()
 {
     _fact();
-    if(current_token.code == MULT_TOKEN  ||
-       current_token.code == DIV_TOKEN) _fact();
-    else{/*error*/}
+    while(current_token.code == MULT_TOKEN  ||
+          current_token.code == DIV_TOKEN)
+    {
+        get_next_token();
+        _fact();
+    }
 }
 
 void _fact()
 {
     switch(current_token.code)
     {
-        case ID_TOKEN     : test_symbol(ID_TOKEN, ERROR_ID_TOKEN);          break;
-        case NUMBER_TOKEN : test_symbol(NUMBER_TOKEN, ERROR_NUMBER_TOKEN);  break;
+        case ID_TOKEN     : get_next_token();  break;
+        case NUMBER_TOKEN : get_next_token();  break;
         case PO_TOKEN     :
             get_next_token();
             _expr();
             test_symbol(PF_TOKEN, ERROR_PF_TOKEN);
         break;
-        default : /*error*/ break;
+        default : printf("\nFACT_ERROR\n"); break;
     }
 }
 
 void parsering()
 {
+    _program();
+    if (current_token.code == FIN_TOKEN) printf("\nBRAVO : le programme est correcte\n");
+    else                                 printf("\nPAS BRAVO : fin de programme erronée\n");
+
+    /*
+    //Demarage
+    read_char(file);         //Lire le premier caractere
+    get_next_token();        //Lire le premier token
+    setCurrent_token_NULL(); //Initialisation de token
     while(current_char != EOF)
     {
-        //_program();
-        //if(current_token.code == E)
-        //get_next_token();
-        //print_token();
-        //_program();
-        scaning();
-        print_token();
+        get_next_token();
     }
+    */
 }

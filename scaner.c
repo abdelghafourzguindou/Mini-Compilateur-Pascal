@@ -1,5 +1,5 @@
 #include "scaner.h"
-int CommentEnCour = 0 ;
+
 void append(char* s, char c)
 {
     int len  = strlen(s);
@@ -10,6 +10,7 @@ void append(char* s, char c)
 void read_char(FILE* file)
 {
     current_char = fgetc(file);
+    //printf("current --> %c\n", current_char);
 }
 
 void read_word()
@@ -41,22 +42,41 @@ void read_number()
 
 void read_special_symbol()
 {
-    char c1 = current_char;
-    append(current_token.name, c1);
-    read_char(file);
-    char c2 = current_char;
-
-    if(( c1 == ':' && c2 == '=') ||
-            ( c1 == '<' && c2 == '>') ||
-            ((c1 == '<' || c1 == '>') && c2 == '='))
+    append(current_token.name, current_char);
+    switch(current_char)
     {
-        append(current_token.name, c2);
-        current_token.code = isSpeacialSymbol(current_token.name);
-    }
-    else
-    {
-        ungetc(current_char, file);
-        getSpecialSymbol(current_token.name);
+        case '+': current_token.code = PLUS_TOKEN;  read_char(file);         break;
+        case '-': current_token.code = MOINS_TOKEN; read_char(file);         break;
+        case '*': current_token.code = MULT_TOKEN;  read_char(file);         break;
+        case ',': current_token.code = VIR_TOKEN;   read_char(file);         break;
+        case ';': current_token.code = PV_TOKEN;    read_char(file);         break;
+        case '/': current_token.code = DIV_TOKEN;   read_char(file);         break;
+        case '(': current_token.code = PO_TOKEN;    read_char(file);         break;
+        case ')': current_token.code = PF_TOKEN;    read_char(file);         break;
+        case '=': current_token.code = EG_TOKEN;    read_char(file);         break;
+        case '.': current_token.code = PT_TOKEN;    read_char(file);         break;
+        case '<': read_char(file);
+            switch(current_char)
+            {
+                case '=': append(current_token.name, current_char); current_token.code = INFEG_TOKEN; read_char(file); break;
+                case '>': append(current_token.name, current_char); current_token.code = DIFF_TOKEN;  read_char(file); break;
+                default : current_token.code = INF_TOKEN;                    break;
+            }
+       break;
+       case '>': read_char(file);
+            switch(current_char){
+                case '=': append(current_token.name, current_char); current_token.code = SUPEG_TOKEN; read_char(file); break;
+                default : current_token.code = SUP_TOKEN;                    break;
+            }
+       break;
+       case ':': read_char(file);
+            switch(current_char)
+            {
+                case '=': append(current_token.name, current_char); current_token.code = AFF_TOKEN; read_char(file);   break;
+                default : current_token.code = ERROR_TOKEN;                  break;
+            }
+       break;
+       default : current_token.code = ERROR_TOKEN;                           break;
     }
 }
 
@@ -115,40 +135,40 @@ bool isSpecial(char s)
     return false;
 }
 
-void getSpecialSymbol(char* str)
-{
-    token_code_t unlex = isSpeacialSymbol(str);
-
-    if(unlex != ERROR_TOKEN)
-    {
-        current_token.code = unlex;
-    }
-    else
-    {
-        current_token.code  = ERROR_TOKEN;
-    }
-}
-
 void setCurrent_token_NULL()
 {
     current_token.name[0] = '\0';
     current_token.code    = EMPTY_TOKEN;
 }
 
+void read_empty()
+{
+    do{
+        read_char(file);
+    }while(isEmpty(current_char));
+}
+
 void scaning()
 {
 
-    read_char(file);
+    setCurrent_token_NULL();
+    //read_char(file);
 
-    if      (isEmpty  (current_char))    { setCurrent_token_NULL(); return;               }
-    else if (isalpha  (current_char))    { setCurrent_token_NULL(); read_word();          }
-    else if (isdigit  (current_char))    { setCurrent_token_NULL(); read_number();        }
-    else if (isSpecial(current_char))    { setCurrent_token_NULL(); read_special_symbol();}
-    else if (isComment(current_char))    { setCurrent_token_NULL(); read_comment();}
+    if      (isEmpty  (current_char))    { read_empty();         }
+    else if (isalpha  (current_char))    { read_word();          }
+    else if (isdigit  (current_char))    { read_number();        }
+    else if (isSpecial(current_char))    { read_special_symbol();}
+    else if (isComment(current_char))    { read_comment();       }
+    else if (current_char == EOF )
+    {
+        //setCurrent_token_NULL();
+        current_token.code =  FIN_TOKEN;
+    }
     else
-    { setCurrent_token_NULL();
+    {
+        //setCurrent_token_NULL();
         current_token.name[0] = current_char ;
-        current_token.code = ERROR_INDEFINED_TOKEN ;
+        current_token.code = ERROR_INDEFINED_TOKEN;
     }
 
 

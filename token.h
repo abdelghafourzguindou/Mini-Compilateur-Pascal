@@ -38,6 +38,7 @@ typedef enum {
     ERROR_TOKEN
 }token_code_t;
 
+
 typedef enum {
      ERROR_INDEFINED_TOKEN,
      ERROR_COMMENT_INCOMPLET ,
@@ -73,8 +74,12 @@ typedef enum {
      ERROR_ID_TOKEN,
 } error_code_t;
 
-token_code_t IsKeyWord(char*);
-token_code_t isSpeacialSymbol(char*);
 
+char* Error_code[32] ;
+char* Token_code[32]  ;
+
+void print_error(error_code_t);
+
+token_code_t IsKeyWord(char*);
 
 #endif // KEYWORD_H
