@@ -1,5 +1,4 @@
 #include "scaner.h"
-int CommentEnCour = 0 ;
 void append(char* s, char c)
 {
     int len  = strlen(s);
@@ -145,6 +144,9 @@ void scaning()
     else if (isdigit  (current_char))    { setCurrent_token_NULL(); read_number();        }
     else if (isSpecial(current_char))    { setCurrent_token_NULL(); read_special_symbol();}
     else if (isComment(current_char))    { setCurrent_token_NULL(); read_comment();}
+    else if (current_char == EOF ) {
+        setCurrent_token_NULL();
+        current_token.code =  FIN_TOKEN; }
     else
     { setCurrent_token_NULL();
         current_token.name[0] = current_char ;
