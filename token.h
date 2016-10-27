@@ -39,6 +39,8 @@ typedef enum {
 }token_code_t;
 
 typedef enum {
+     ERROR_INDEFINED_TOKEN,
+     ERROR_COMMENT_INCOMPLET ,
      ERROR_PROGRAM_TOKEN,
      ERROR_CONST_TOKEN,
      ERROR_VAR_TOKEN,

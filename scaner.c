@@ -1,5 +1,5 @@
 #include "scaner.h"
-
+int CommentEnCour = 0 ;
 void append(char* s, char c)
 {
     int len  = strlen(s);
@@ -47,8 +47,8 @@ void read_special_symbol()
     char c2 = current_char;
 
     if(( c1 == ':' && c2 == '=') ||
-       ( c1 == '<' && c2 == '>') ||
-       ((c1 == '<' || c1 == '>') && c2 == '='))
+            ( c1 == '<' && c2 == '>') ||
+            ((c1 == '<' || c1 == '>') && c2 == '='))
     {
         append(current_token.name, c2);
         current_token.code = isSpeacialSymbol(current_token.name);
@@ -62,26 +62,22 @@ void read_special_symbol()
 
 void read_comment()
 {
-    append(current_token.name, current_char);
+    int fin_comment = 0 ;
+    char previous_char ;
     read_char(file);
-    append(current_token.name, current_char);
     if(current_char == '*')
     {
+        previous_char = current_char ;
         read_char(file);
-        append(current_token.name, current_char);
-        while(current_char != '*')
+        while( fin_comment == 0 && current_char != EOF )
         {
+            previous_char = current_char ;
             read_char(file);
-            append(current_token.name, current_char);
-            if(current_char == '{') read_comment();
+            if( previous_char == '*' && current_char == '}')
+                fin_comment = 1 ;
         }
-        read_char(file);
-        append(current_token.name, current_char);
-        if(current_char == "}") setCurrent_token_NULL();
-        else
-        {
-            current_token.code = ERROR_TOKEN;
-        }
+        if ( fin_comment == 0 )
+            current_token.code = ERROR_COMMENT_INCOMPLET ;
     }
     else
     {
@@ -104,18 +100,18 @@ bool isEmpty(char s)
 bool isSpecial(char s)
 {
     if(s == ':' ||
-       s == '=' ||
-       s == '<' ||
-       s == '>' ||
-       s == '+' ||
-       s == '-' ||
-       s == '/' ||
-       s == '*' ||
-       s == ',' ||
-       s == ';' ||
-       s == '.' ||
-       s == '(' ||
-       s == ')') return true;
+            s == '=' ||
+            s == '<' ||
+            s == '>' ||
+            s == '+' ||
+            s == '-' ||
+            s == '/' ||
+            s == '*' ||
+            s == ',' ||
+            s == ';' ||
+            s == '.' ||
+            s == '(' ||
+            s == ')') return true;
     return false;
 }
 
@@ -148,12 +144,12 @@ void scaning()
     else if (isalpha  (current_char))    { setCurrent_token_NULL(); read_word();          }
     else if (isdigit  (current_char))    { setCurrent_token_NULL(); read_number();        }
     else if (isSpecial(current_char))    { setCurrent_token_NULL(); read_special_symbol();}
-    else if (isComment(current_char))    { setCurrent_token_NULL(); read_comment();       }
+    else if (isComment(current_char))    { setCurrent_token_NULL(); read_comment();}
+    else
+    { setCurrent_token_NULL();
+        current_token.name[0] = current_char ;
+        current_token.code = ERROR_INDEFINED_TOKEN ;
+    }
 
-    /*if(current_char == EOF)
-    {
-        setCurrent_token_NULL();
-        current_token.name[0] = EOF;
-        current_token.code    = FIN_TOKEN;
-    }*/
+
 }

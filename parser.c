@@ -202,9 +202,12 @@ void parsering()
 {
     while(current_char != EOF)
     {
-        _program();
+        //_program();
         //if(current_token.code == E)
         //get_next_token();
         //print_token();
+        //_program();
+        scaning();
+        print_token();
     }
 }
