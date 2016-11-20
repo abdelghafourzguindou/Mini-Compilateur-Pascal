@@ -3,6 +3,8 @@
 
 #include <string.h>
 
+extern int ligne_number;
+
 typedef enum {
     PROGRAM_TOKEN,
     CONST_TOKEN,
@@ -75,8 +77,8 @@ typedef enum {
 } error_code_t;
 
 
-char* Error_code[32] ;
-char* Token_code[32]  ;
+char* Error_code[32];
+char* Token_code[32];
 
 void print_error(error_code_t);
 

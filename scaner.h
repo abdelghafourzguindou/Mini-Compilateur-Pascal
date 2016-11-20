@@ -9,11 +9,10 @@
 #include "automate.h"
 #include "token.h"
 
-#define nameFile "Test.p"
-
 FILE* file;
 char current_char;
 
+int ligne_number;
 
 typedef struct _token {
     char         name[20];

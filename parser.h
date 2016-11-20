@@ -3,9 +3,24 @@
 
 #include "scaner.h"
 
-extern token_t current_token;
-extern char    current_char;
-extern void    scaning();
+bool no_error;
+static int symbol_iterator;
+char* last_token;
+
+//sm traitement
+typedef enum {TPROG, TCONST, TVAR} idf_t;
+typedef struct _sym {
+    char* symbol_name;
+    idf_t symbol_type;
+} symbol_t;
+symbol_t tab_symbol[100];
+
+bool isDeclared(char*);
+bool isConst(char*);
+void add_symbol(sym_t);
+symbol_t new_symbol(char*, idf_t);
+
+
 
 void get_next_token();
 void parsering(void);

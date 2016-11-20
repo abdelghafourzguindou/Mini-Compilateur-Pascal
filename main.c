@@ -7,10 +7,7 @@
 int main()
 {
 
-    /*scaning();
-    print_lex();*/
-
-    file = fopen(nameFile, "r");
+    file = fopen("test_pascal.p", "r");
 
     if(file == NULL)
     {

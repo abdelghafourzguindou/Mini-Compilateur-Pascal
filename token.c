@@ -22,7 +22,7 @@ token_code_t IsKeyWord(char* kword)
 
 void print_error(error_code_t error)
 {
-    printf("\nERROR : %s\n", Error_code[error]);
+    printf("\n\nerror ligne %d : %s\n\n", ligne_number, Error_code[error]);
 }
 
 char* Token_code[32] =

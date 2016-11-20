@@ -1,5 +1,7 @@
 #include "scaner.h"
 
+int ligne_number = 0;
+
 void append(char* s, char c)
 {
     int len  = strlen(s);
@@ -95,6 +97,7 @@ void read_comment()
             read_char(file);
             if( previous_char == '*' && current_char == '}')
                 fin_comment = 1 ;
+                read_char(file);
         }
         if ( fin_comment == 0 )
             current_token.code = ERROR_COMMENT_INCOMPLET ;
@@ -113,6 +116,7 @@ bool isComment(char s)
 
 bool isEmpty(char s)
 {
+    if(s == '\n') ligne_number++;
     if(s == ' ' || s == '\n' || s == '\t') return true;
     return false;
 }
@@ -145,14 +149,13 @@ void read_empty()
 {
     do{
         read_char(file);
-    }while(isEmpty(current_char));
+    } while(isEmpty(current_char));
 }
 
 void scaning()
 {
 
     setCurrent_token_NULL();
-    //read_char(file);
 
     if      (isEmpty  (current_char))    { read_empty();         }
     else if (isalpha  (current_char))    { read_word();          }
@@ -161,15 +164,11 @@ void scaning()
     else if (isComment(current_char))    { read_comment();       }
     else if (current_char == EOF )
     {
-        //setCurrent_token_NULL();
         current_token.code =  FIN_TOKEN;
     }
     else
     {
-        //setCurrent_token_NULL();
         current_token.name[0] = current_char ;
         current_token.code = ERROR_INDEFINED_TOKEN;
     }
-
-
 }
