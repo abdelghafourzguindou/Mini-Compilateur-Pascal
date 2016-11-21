@@ -8,6 +8,7 @@ symbol_t new_symbol(char* name, idf_t type)
     symbol_t sym;
     sym.symbol_name = (char*) malloc(strlen(name)*sizeof(char));
     strcpy(sym.symbol_name, name);
+    sym.symbol_type = type;
     //printf("iter : %d", symbol_iterator);
     return sym;
 }
@@ -15,38 +16,52 @@ symbol_t new_symbol(char* name, idf_t type)
 bool isDeclared(char* name)
 {
     int i;
+    bool res = false;
     for(i = 0; i < symbol_iterator; i++)
     {
         if(!strcmp(tab_symbol[i].symbol_name, name))
         {
-            printf("\nerror sm : %s is declared\n", name);
-            no_error = false;
-            return true;
+            //no_error = false;
+            res = true;
+            break;
         }
     }
-    return false;
+    return res;
 }
 
 bool isConst(char* name)
 {
     int i;
+    bool res = false;
     for(i = 0; i < symbol_iterator; i++)
     {
         if(!strcmp(tab_symbol[i].symbol_name, name))
+        {
             if(tab_symbol[i].symbol_type == TCONST)
-                return true;
-        else return false;
+            {
+                res = true;
+                break;
+            }
+        }
     }
+    return res;
 }
 
 void print_token()
 {
-    if(current_token.code != EMPTY_TOKEN) printf("--> %s\t\t\t\t%s\n", current_token.name,  Token_code[current_token.code]);
+    //if(current_token.code != EMPTY_TOKEN)
+    printf("%s\t\t\t%s\n", current_token.name,  Token_code[current_token.code]);
 }
 
 void get_next_token()
 {
-    do{
+
+    last_token.name[0] = '\0';
+    last_token.code    = EMPTY_TOKEN;
+    strcpy(last_token.name, current_token.name);
+    last_token.code = current_token.code;
+
+    do {
         scaning();
     } while(current_token.code == EMPTY_TOKEN);
     //print_token();
@@ -54,17 +69,17 @@ void get_next_token()
 
 void test_symbol(token_code_t code_token, error_code_t error_code)
 {
-    last_token = (char*) malloc(strlen(current_token.name)*sizeof(char));
-    strcpy(last_token, current_token.name);
     if(current_token.code == code_token)
     {
-        get_next_token();
+        //printf("current : %s && last : %s\n", current_token.name, last_token.name);
+        //get_next_token();
     }
     else
     {
         print_error(error_code);
         no_error = false;
     }
+    get_next_token();
 }
 
 void _program()
@@ -79,7 +94,7 @@ void _program()
     test_symbol(PROGRAM_TOKEN, ERROR_PROGRAM_TOKEN);
     test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
 
-    if(!isDeclared(last_token)) tab_symbol[symbol_iterator++] = new_symbol(last_token, TPROG);
+    tab_symbol[symbol_iterator++] = new_symbol(last_token.name, TPROG);
 
     test_symbol(PV_TOKEN, ERROR_PV_TOKEN);
     _block();
@@ -102,14 +117,17 @@ void _consts()
             get_next_token();
             test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
 
-            if(!isDeclared(last_token)) tab_symbol[symbol_iterator++] = new_symbol(last_token, TCONST);
+            if(!isDeclared(last_token.name)) tab_symbol[symbol_iterator++] = new_symbol(last_token.name, TCONST);
+            else {print_sm_error(last_token.name, ligne_number, "already declared"); no_error = false;}
 
             test_symbol(EG_TOKEN, ERROR_EG_TOKEN);
             test_symbol(NUMBER_TOKEN, ERROR_NUMBER_TOKEN);
             test_symbol(PV_TOKEN, ERROR_PV_TOKEN);
+
             while(current_token.code == ID_TOKEN)
             {
                 if(!isDeclared(current_token.name)) tab_symbol[symbol_iterator++] = new_symbol(current_token.name, TCONST);
+                else {print_sm_error(current_token.name, ligne_number, "already declared"); no_error = false;}
 
                 get_next_token();
                 test_symbol(EG_TOKEN, ERROR_EG_TOKEN);
@@ -132,14 +150,16 @@ void _vars()
             get_next_token();
             test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
 
-            if(!isDeclared(last_token)) tab_symbol[symbol_iterator++] = new_symbol(last_token, TVAR);
+            if(!isDeclared(last_token.name)) tab_symbol[symbol_iterator++] = new_symbol(last_token.name, TVAR);
+            else {print_sm_error(last_token.name, ligne_number, "already declared"); no_error = false;}
 
             while(current_token.code == VIR_TOKEN)
             {
                 get_next_token();
                 test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
 
-                if(!isDeclared(last_token)) tab_symbol[symbol_iterator++] = new_symbol(last_token, TVAR);
+                if(!isDeclared(last_token.name)) tab_symbol[symbol_iterator++] = new_symbol(last_token.name, TVAR);
+                else {print_sm_error(last_token.name, ligne_number, "already declared"); no_error = false;}
             }
             test_symbol(PV_TOKEN, ERROR_PV_TOKEN);
         break;
@@ -181,6 +201,10 @@ void _affect()
 {
 
     test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
+
+    if(!isDeclared(last_token.name))  {print_sm_error(last_token.name, ligne_number, "no declared");         no_error = false;}
+    if(isConst(last_token.name))      {print_sm_error(last_token.name, ligne_number, "can\'t modify const"); no_error = false;}
+
     test_symbol(AFF_TOKEN, ERROR_AFF_TOKEN);
     _expr();
 }
@@ -218,9 +242,17 @@ void _read()
     test_symbol(READ_TOKEN, ERROR_READ_TOKEN);
     test_symbol(PO_TOKEN, ERROR_PO_TOKEN);
     test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
+
+    if(!isDeclared(last_token.name))  {print_sm_error(last_token.name, ligne_number, "no declared");         no_error = false;}
+    if(isConst(last_token.name))      {print_sm_error(last_token.name, ligne_number, "can\'t modify const"); no_error = false;}
+
+
     while(current_token.code == VIR_TOKEN)
     {
         test_symbol(ID_TOKEN, ERROR_ID_TOKEN);
+
+        if(!isDeclared(last_token.name))  {print_sm_error(last_token.name, ligne_number, "no declared");         no_error = false;}
+        if(isConst(last_token.name))      {print_sm_error(last_token.name, ligne_number, "can\'t modify const"); no_error = false;}
     }
     test_symbol(PF_TOKEN, ERROR_PF_TOKEN);
 }

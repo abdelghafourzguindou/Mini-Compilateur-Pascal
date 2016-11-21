@@ -3,28 +3,36 @@
 
 #include "scaner.h"
 
+#define MAX_ERROR 100
+
 bool no_error;
 static int symbol_iterator;
-char* last_token;
+token_t last_token;
 
 //sm traitement
-typedef enum {TPROG, TCONST, TVAR} idf_t;
-typedef struct _sym {
+typedef enum
+{
+    TPROG,
+    TCONST,
+    TVAR
+} idf_t;
+
+typedef struct _sym
+{
     char* symbol_name;
     idf_t symbol_type;
 } symbol_t;
-symbol_t tab_symbol[100];
+
+symbol_t tab_symbol[MAX_ERROR];
 
 bool isDeclared(char*);
 bool isConst(char*);
 void add_symbol(sym_t);
 symbol_t new_symbol(char*, idf_t);
 
-
-
 void get_next_token();
 void parsering(void);
-void print_token(void);
+void print_token();
 void test_symbol(token_code_t, error_code_t);
 void _program();
 void _block();

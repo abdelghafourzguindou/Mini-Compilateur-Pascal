@@ -8,6 +8,7 @@
 
 #include "automate.h"
 #include "token.h"
+#include "error.h"
 
 FILE* file;
 char current_char;

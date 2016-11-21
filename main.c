@@ -7,7 +7,7 @@
 int main()
 {
 
-    file = fopen("test_pascal.p", "r");
+    file = fopen("pascal_test.p", "r");
 
     if(file == NULL)
     {
